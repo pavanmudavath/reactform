@@ -1,43 +1,13 @@
 import  { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import './Form.css';
 
 const Form = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    profilePicture: null,
-    interests: [],
-    gender: ''
-  });
-
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  //
-
-  const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
-    if (type === 'checkbox') {
-      setFormData(prevState => ({
-        ...prevState,
-        interests: checked ? [...prevState.interests, value] : prevState.interests.filter(interest => interest !== value)
-      }));
-    } else if (type === 'file') {
-      setFormData(prevState => ({
-        ...prevState,
-        profilePicture: files[0]
-      }));
-    } else {
-      setFormData(prevState => ({
-        ...prevState,
-        [name]: value
-      }));
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+  const onSubmit = (data) => {
+    console.log(data);
     setFormSubmitted(true);
   };
 
@@ -48,54 +18,60 @@ const Form = () => {
           Form submitted successfully!
         </div>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <h2 className="text-2xl font-bold mb-6">Register</h2>
           
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Name</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
+              {...register('name', { required: 'Name is required' })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             />
+            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           </div>
 
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
             <input
               type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
+              {...register('email', { 
+                required: 'Email is required', 
+                pattern: {
+                  value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                  message: 'Invalid email address'
+                }
+              })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </div>
 
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
             <input
               type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
+              {...register('phone', { 
+                required: 'Phone number is required', 
+                pattern: {
+                  value: /^\d{10}$/,
+                  message: 'Invalid phone number'
+                }
+              })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             />
+            {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
           </div>
 
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Profile Picture</label>
             <input
               type="file"
-              name="profilePicture"
+              {...register('profilePicture', { required: 'Profile picture is required' })}
               accept="image/*"
-              onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             />
+            {errors.profilePicture && <p className="text-red-500 text-sm">{errors.profilePicture.message}</p>}
           </div>
 
           <div className="mb-4">
@@ -103,9 +79,8 @@ const Form = () => {
             <div className="flex items-center">
               <input
                 type="checkbox"
-                name="interests"
+                {...register('interests')}
                 value="Coding"
-                onChange={handleChange}
                 className="mr-2"
               />
               <label>Coding</label>
@@ -113,9 +88,8 @@ const Form = () => {
             <div className="flex items-center">
               <input
                 type="checkbox"
-                name="interests"
+                {...register('interests')}
                 value="Music"
-                onChange={handleChange}
                 className="mr-2"
               />
               <label>Music</label>
@@ -123,9 +97,8 @@ const Form = () => {
             <div className="flex items-center">
               <input
                 type="checkbox"
-                name="interests"
+                {...register('interests')}
                 value="Gaming"
-                onChange={handleChange}
                 className="mr-2"
               />
               <label>Gaming</label>
@@ -135,10 +108,7 @@ const Form = () => {
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
             <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
+              {...register('gender', { required: 'Gender is required' })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             >
               <option value="">Select</option>
@@ -146,6 +116,7 @@ const Form = () => {
               <option value="Female">Female</option>
               <option value="Other">Other</option>
             </select>
+            {errors.gender && <p className="text-red-500 text-sm">{errors.gender.message}</p>}
           </div>
 
           <button
