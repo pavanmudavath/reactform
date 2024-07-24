@@ -1,0 +1,21 @@
+/* src/components/Form.css */
+body {
+  background-color: #f0f4f8;
+  font-family: 'Inter', sans-serif;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-green-600 {
+  color: #16a34a;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
